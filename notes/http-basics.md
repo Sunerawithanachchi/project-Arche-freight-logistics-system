@@ -32,3 +32,5 @@ View all cargo /cargo GET Server sends a list of all cargo.
 Add new cargo /cargo POST Server adds your data to Postgres.
 Update a truck /trucks/8 PUT Server updates Truck #8's location.
 Fire a driver /drivers/12 DELETE Server removes Driver #12 from the DB.
+
+## /health: A standard endpoint used for monitoring. It returns a simple JSON status to tell external tools that the service is running and ready to handle requests.
