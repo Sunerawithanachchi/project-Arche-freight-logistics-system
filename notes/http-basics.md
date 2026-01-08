@@ -10,17 +10,21 @@ It initiate an http request/response cycle .The client send request with a metho
 
 ## http methods GET vs POST
 
-GET is fast, short , non secure and Idempotent (consecutive same request does nothing)
-POST is slow , long , secure and not idempotent
-(same request done again and again treat as new request each time)
+GET Used to retrieve data
+Should be idempotent (repeating it has no side effects)
+Parameters usually in URL
+
+POST Used to create or trigger actions
+Not idempotent
+Data usually in request body
 
 ## What an http code status communicate
 
 100s processing , wait
 200s successful , OK
 300s redirect
-400s insufficient data on request/ client error
-500 response error / server failure
+400s wrong format/ client error
+500 server side failure
 
 ## What REST means without buzzwords
 
