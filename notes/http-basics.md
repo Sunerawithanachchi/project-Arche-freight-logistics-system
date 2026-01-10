@@ -34,3 +34,8 @@ Update a truck /trucks/8 PUT Server updates Truck #8's location.
 Fire a driver /drivers/12 DELETE Server removes Driver #12 from the DB.
 
 ## /health: A standard endpoint used for monitoring. It returns a simple JSON status to tell external tools that the service is running and ready to handle requests.
+
+## Express middleware
+
+##Express processes a request like a pipeline. Instead of one giant function, it uses small, modular blocks of code called Middleware. Each block does one job—like logging or parsing JSON—and then calls next() to hand off the request to the next block until it finally reaches the route handler and a response is sent.
+Order Matters. Middleware defined at the top of app.js (like our logger) sees the request before middleware defined at the bottom.
