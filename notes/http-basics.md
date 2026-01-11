@@ -39,3 +39,6 @@ Fire a driver /drivers/12 DELETE Server removes Driver #12 from the DB.
 
 ##Express processes a request like a pipeline. Instead of one giant function, it uses small, modular blocks of code called Middleware. Each block does one job—like logging or parsing JSON—and then calls next() to hand off the request to the next block until it finally reaches the route handler and a response is sent.
 Order Matters. Middleware defined at the top of app.js (like our logger) sees the request before middleware defined at the bottom.
+
+##Importance of dotenv : In professional engineering, we never "hard-code" sensitive information (like database passwords, API keys, or even the Port number) directly into the code. If you do, and you push that code to GitHub, the whole world can see your secrets.
+dotenv is a zero-dependency module that loads variables from a file called .env into process.env
