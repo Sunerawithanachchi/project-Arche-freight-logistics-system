@@ -42,3 +42,8 @@ Order Matters. Middleware defined at the top of app.js (like our logger) sees th
 
 ##Importance of dotenv : In professional engineering, we never "hard-code" sensitive information (like database passwords, API keys, or even the Port number) directly into the code. If you do, and you push that code to GitHub, the whole world can see your secrets.
 dotenv is a zero-dependency module that loads variables from a file called .env into process.env
+
+## Secrets (.env): Stay on the server. Never go to the user/client.
+
+    Data (Location): Provided by the user at runtime.
+    Cloud Hosting: Uses "Environment Dashboards" instead of .env files for maximum security.

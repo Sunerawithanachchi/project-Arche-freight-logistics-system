@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const healthRoutes = require("./routes/health.routes.js");
+const shipmentRoutes = require("./routes/shipments.routes");
 // Initialize express app
 // This tells the app: "If someone goes to/health, use the logic in healthRoutes"
 //Built-in Middleware: express.json()
@@ -16,5 +17,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/health", healthRoutes);
+
+//Mount the domain route
+app.use("/shipments", shipmentRoutes);
 
 module.exports = app;
