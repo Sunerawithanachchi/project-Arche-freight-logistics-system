@@ -21,4 +21,12 @@ app.use("/health", healthRoutes);
 //Mount the domain route
 app.use("/shipments", shipmentRoutes);
 
+// 404 catch-all
+app.use((req, res, next) => {
+  res.status(404).json({ error: "Route Not Found" });
+});
+
+const errorHandler = require("./middleware/errorHandler");
+app.use(errorHandler);
+
 module.exports = app;

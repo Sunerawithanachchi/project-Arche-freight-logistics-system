@@ -18,6 +18,7 @@ const shipments = [
 ];
 
 const getShipments = (req, res) => {
+  throw new Error("CRITICAL: Database connection timed out");
   const validShipments = shipments.filter((shipment) => {
     const isValid = VALID_STATUSES.includes(shipment.status);
     if (!isValid) {
