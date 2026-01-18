@@ -1,3 +1,4 @@
+require('dotenv').config(); // THIS MUST BE LINE 1
 const express = require("express");
 const app = express();
 const healthRoutes = require("./routes/health.routes.js");
@@ -28,5 +29,11 @@ app.use((req, res, next) => {
 
 const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server is live at http://localhost:${PORT}`);
+  console.log(`📡 Press Ctrl+C to stop the server`);
+});
 
 module.exports = app;
