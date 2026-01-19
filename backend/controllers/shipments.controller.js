@@ -1,4 +1,4 @@
-const VALID_STATUSES = ["BOOKED", "IN_TRANSIT", "DELIVERED"];
+/* const VALID_STATUSES = ["BOOKED", "IN_TRANSIT", "DELIVERED"];
 // A static array represent our "Database" for now
 
 const shipments = [
@@ -33,4 +33,29 @@ const getShipments = (req, res) => {
 
 module.exports = {
   getShipments,
+};*/
+
+const db = require('../db'); // Import the gatekeeper 
+const getShipments = async(req, res)=>{
+  try{
+    // attempt to fetch data from postgres
+    const result = await db.query('SELECT * FROM shipments');
+    const shipments = result.rows ;
+
+    //filter logic 
+    const VALID_STATUSES = ["BOOKED" , "IN_TRANSIT", "DELIVERED"];
+    const validShipments = shipments.filter(shipment =>{
+      const isValid = VALID_STATUSES.includes(shipment.status);
+      if(!isValid){
+        console.warn(`[DATA QUALITY]: Skipping shipment ${shipment.id} with status: ${shipment.status}`);
+      }
+      return isValid;
+    });
+    res.status(200).json(validShipments);
+  } catch (error){
+    //faliure safe behaviour- log the error and return the empty list 
+    console.error("[DB CONNECTION ERROR]: Returning empty list to maintain stability");
+     return res.status(200).json([]); 
+  }
 };
+module.exports = {getShipments};
