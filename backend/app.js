@@ -17,6 +17,8 @@ app.use((req, res, next) => {
   next(); // Critical: without this the request will hang forever
 });
 
+app.use(express.json());
+
 app.use("/health", healthRoutes);
 
 //Mount the domain route

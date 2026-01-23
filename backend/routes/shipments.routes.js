@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const shipmentsController = require("../controllers/shipments.controller");
 
-//GET /shipments
+//GET /shipments -fetch all shipments
 router.get("/", shipmentsController.getShipments);
+
+//POST /shipments - create a new shipment 
+router.post("/", shipmentsController.createShipment);
 
 module.exports = router;

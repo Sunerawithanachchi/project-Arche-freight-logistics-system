@@ -58,4 +58,38 @@ const getShipments = async(req, res)=>{
      return res.status(200).json([]); 
   }
 };
-module.exports = {getShipments};
+const createShipment = async(req, res)=>{
+  const {origin , destination , status} = req.body;
+  const VALID_STATUSES = ['BOOKED', 'IN_TRANSIT', 'DELIVERED'];
+
+  // 1 validation layer
+  if(!origin || !destination || !status){
+    return res.status(400).json({error:'All fields (origin, destination, status) are required.'});
+  }
+  if(!VALID_STATUSES.includes(status)){
+    return res.status(400).json({error:`Invalid status.Must be one of ${VALID_STATUSES.join(', ')}`});
+  }
+  try{
+    //2 Database interaction (parameterized)
+    const query =`
+    INSERT INTO shipments (origin, destination, status)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+    `;
+    const result = await db.query(query, [origin, destination, status]);
+
+    //3 Success response 
+    res.status(201).json(result.rows[0]);
+
+  } catch (err){
+    // Error handling
+    console.error('Database error:',err);
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+};
+
+// Exports always at the bottom
+module.exports = {
+  getShipments,
+  createShipment
+};
