@@ -36,6 +36,7 @@ module.exports = {
 };*/
 
 const db = require('../db'); // Import the gatekeeper 
+const shipmentService = require ("../services/shipment.service");
 const getShipments = async(req, res)=>{
   try{
     // attempt to fetch data from postgres
@@ -88,8 +89,29 @@ const createShipment = async(req, res)=>{
   }
 };
 
+const updateStatus = async (req, res,) =>{
+  try{
+    const {id} = req.params;
+    const {status} = req.body;
+
+    //basic request validation
+    if(!status){
+      return res.status(400).json({error: "Status is required"});
+    }
+
+    const updatedShipment = await shipmentService.updateShipmentStatus(id, status);
+    res.json(updatedShipment);
+  } catch (error){
+    // This allows the service to dictate the status code (404 or 409)
+    const statusCode = error.statusCode || 500;
+    res.status(statusCode).json({error: error.message});
+
+  }
+};
+
 // Exports always at the bottom
 module.exports = {
   getShipments,
-  createShipment
+  createShipment,
+  updateStatus
 };

@@ -8,4 +8,6 @@ router.get("/", shipmentsController.getShipments);
 //POST /shipments - create a new shipment 
 router.post("/", shipmentsController.createShipment);
 
+router.patch("/:id/status", shipmentsController.updateStatus); 
+
 module.exports = router;
