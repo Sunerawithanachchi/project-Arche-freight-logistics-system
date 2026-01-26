@@ -17,7 +17,7 @@ app.use((req, res, next) => {
   next(); // Critical: without this the request will hang forever
 });
 
-app.use(express.json());
+
 
 app.use("/health", healthRoutes);
 
@@ -31,6 +31,8 @@ app.use((req, res, next) => {
 
 const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

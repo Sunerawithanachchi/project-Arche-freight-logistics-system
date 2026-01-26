@@ -36,12 +36,14 @@ module.exports = {
 };*/
 
 const db = require('../db'); // Import the gatekeeper 
+const asyncHandler = require('../utils/asyncHandler');
 const shipmentService = require ("../services/shipment.service");
-const getShipments = async(req, res)=>{
-  try{
+
+const getShipments = asyncHandler(async(req, res)=>{
+  
     // attempt to fetch data from postgres
     const result = await db.query('SELECT * FROM shipments');
-    const shipments = result.rows ;
+    const shipments = result.rows ; 
 
     //filter logic 
     const VALID_STATUSES = ["BOOKED" , "IN_TRANSIT", "DELIVERED"];
@@ -53,61 +55,41 @@ const getShipments = async(req, res)=>{
       return isValid;
     });
     res.status(200).json(validShipments);
-  } catch (error){
-    //faliure safe behaviour- log the error and return the empty list 
-    console.error("[DB CONNECTION ERROR]: Returning empty list to maintain stability");
-     return res.status(200).json([]); 
-  }
-};
-const createShipment = async(req, res)=>{
-  const {origin , destination , status} = req.body;
-  const VALID_STATUSES = ['BOOKED', 'IN_TRANSIT', 'DELIVERED'];
+  
+});
+const createShipment = asyncHandler(async(req, res)=> {
+  const {origin , destination, status} = req.body;
+  const VALID_STATUSES = ['BOOKED' , 'IN_TRANSIT' , 'DELIVERED'];
 
-  // 1 validation layer
   if(!origin || !destination || !status){
-    return res.status(400).json({error:'All fields (origin, destination, status) are required.'});
+    const error = new Error ('All fields (origin , destination, status) are required');
+    error.statusCode = 400;
+    throw error;
   }
   if(!VALID_STATUSES.includes(status)){
-    return res.status(400).json({error:`Invalid status.Must be one of ${VALID_STATUSES.join(', ')}`});
+    const error = new Error (`Invalid status. Must be one of ${VALID_STATUSES.join(',')}`);
+    error.statusCode = 400;
+    throw error;
   }
-  try{
-    //2 Database interaction (parameterized)
-    const query =`
-    INSERT INTO shipments (origin, destination, status)
-    VALUES ($1, $2, $3)
-    RETURNING *;
-    `;
-    const result = await db.query(query, [origin, destination, status]);
 
-    //3 Success response 
-    res.status(201).json(result.rows[0]);
+  const query =`INSERT INTO shipments (origin, destination, status) VALUES ($1, $2, $3) RETURNING *;` ;
+  const result = await db.query(query, [origin, destination, status]);
 
-  } catch (err){
-    // Error handling
-    console.error('Database error:',err);
-    res.status(500).json({error: 'Internal Server Error'});
+  res.status(201).json(result.rows[0]);
+});
+
+const updateStatus = asyncHandler(async(req, res) =>{
+  const {id} = req.params;
+  const {status} = req.body;
+
+  if(!status){
+    const error = new Error ("Status is Required");
+    error.statusCode = 400;
+    throw error; // the wrapper will catch this and send to middleware
   }
-};
-
-const updateStatus = async (req, res,) =>{
-  try{
-    const {id} = req.params;
-    const {status} = req.body;
-
-    //basic request validation
-    if(!status){
-      return res.status(400).json({error: "Status is required"});
-    }
-
-    const updatedShipment = await shipmentService.updateShipmentStatus(id, status);
-    res.json(updatedShipment);
-  } catch (error){
-    // This allows the service to dictate the status code (404 or 409)
-    const statusCode = error.statusCode || 500;
-    res.status(statusCode).json({error: error.message});
-
-  }
-};
+  const updatedShipment = await shipmentService.updateShipmentStatus(id, status);
+  res.json(updatedShipment); 
+});
 
 // Exports always at the bottom
 module.exports = {
