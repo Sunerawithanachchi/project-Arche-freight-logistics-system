@@ -88,7 +88,7 @@ const updateStatus = asyncHandler(async(req, res) =>{
     throw error; // the wrapper will catch this and send to middleware
   }
   const updatedShipment = await shipmentService.updateShipmentStatus(id, status);
-  res.json(updatedShipment); 
+  res.status(200).json(updatedShipment); 
 });
 
 // Exports always at the bottom

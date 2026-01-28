@@ -23,6 +23,13 @@ const updateShipmentStatus = async (id, nextStatus)=>{
     const currentStatus = currentResult.rows[0].status.trim().toUpperCase() ;
     const targetStatus = nextStatus.toUpperCase();
 
+    //  detect no-op
+    if(currentStatus === targetStatus){
+        const error = new Error (`Conflict: Shipment is already ${targetStatus} `);
+        error.statusCode = 409;
+        throw error;
+    }
+
     // business logic - check if the trasaction is legal
     const allowedNext = VALID_TRANSITIONS[currentStatus];
 
@@ -37,7 +44,7 @@ const updateShipmentStatus = async (id, nextStatus)=>{
 
     // Update the database
     const updateResult = await pool.query(
-        "UPDATE shipments SET status = $1 WHERE id =$2 RETURNING *",
+        "UPDATE shipments SET status = $1, updated_at = NOW() WHERE id =$2 RETURNING *",
         [targetStatus, id]
     );
 
