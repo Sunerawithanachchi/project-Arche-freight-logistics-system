@@ -35,16 +35,19 @@ module.exports = {
   getShipments,
 };*/
 
-const db = require('../db'); // Import the gatekeeper 
-const asyncHandler = require('../utils/asyncHandler');
-const shipmentService = require ("../services/shipment.service");
+//const db = require("../db"); // Import the gatekeeper
+const asyncHandler = require("../utils/asyncHandler");
+const shipmentService = require("../services/shipment.service");
 
-const getShipments = asyncHandler(async(req, res)=>{
-  
-    // attempt to fetch data from postgres
-    const result = await db.query('SELECT * FROM shipments');
-    const shipments = result.rows ; 
+//GET /shipments
+const getShipments = asyncHandler(async (req, res) => {
+  // Extract filter from URL  (e.g./shipments?owner_id=...)
+  const { owner_id } = req.query;
 
+  const shipments = await shipmentService.getShipments(owner_id);
+  res.status(200).json(shipments);
+});
+/*
     //filter logic 
     const VALID_STATUSES = ["BOOKED" , "IN_TRANSIT", "DELIVERED"];
     const validShipments = shipments.filter(shipment =>{
@@ -56,44 +59,52 @@ const getShipments = asyncHandler(async(req, res)=>{
     });
     res.status(200).json(validShipments);
   
-});
-const createShipment = asyncHandler(async(req, res)=> {
-  const {origin , destination, status} = req.body;
-  const VALID_STATUSES = ['BOOKED' , 'IN_TRANSIT' , 'DELIVERED'];
+});*/
 
-  if(!origin || !destination || !status){
-    const error = new Error ('All fields (origin , destination, status) are required');
+//POST /Shipments
+const createShipment = asyncHandler(async (req, res) => {
+  const { origin, destination, status, owner_id } = req.body;
+
+  if (!origin || !destination || !status || !owner_id) {
+    const error = new Error(
+      "All fields (origin , destination, status , owner_id) are required",
+    );
     error.statusCode = 400;
     throw error;
   }
-  if(!VALID_STATUSES.includes(status)){
-    const error = new Error (`Invalid status. Must be one of ${VALID_STATUSES.join(',')}`);
-    error.statusCode = 400;
-    throw error;
+  try {
+    const newShipment = await shipmentService.createShipment({
+      origin,
+      destination,
+      status,
+      owner_id,
+    });
+    res.status(201).json(newShipment);
+  } catch (err) {
+    console.error("The actual error is:", err);
+    res.status(err.statusCode || 500).json({ error: err.message });
   }
-
-  const query =`INSERT INTO shipments (origin, destination, status) VALUES ($1, $2, $3) RETURNING *;` ;
-  const result = await db.query(query, [origin, destination, status]);
-
-  res.status(201).json(result.rows[0]);
 });
 
-const updateStatus = asyncHandler(async(req, res) =>{
-  const {id} = req.params;
-  const {status} = req.body;
+const updateStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
 
-  if(!status){
-    const error = new Error ("Status is Required");
+  if (!status) {
+    const error = new Error("Status is Required");
     error.statusCode = 400;
     throw error; // the wrapper will catch this and send to middleware
   }
-  const updatedShipment = await shipmentService.updateShipmentStatus(id, status);
-  res.status(200).json(updatedShipment); 
+  const updatedShipment = await shipmentService.updateShipmentStatus(
+    id,
+    status,
+  );
+  res.status(200).json(updatedShipment);
 });
 
 // Exports always at the bottom
 module.exports = {
   getShipments,
   createShipment,
-  updateStatus
+  updateStatus,
 };
