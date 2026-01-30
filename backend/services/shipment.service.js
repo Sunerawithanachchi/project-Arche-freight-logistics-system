@@ -46,15 +46,15 @@ const createShipment = async (shipmentData) => {
   return result.rows[0];
 };
 
-const getShipments = async (ownerIdFilter = null) => {
+const getShipments = async (ownerIdFilter) => {
   //query adjustment : filter by owner if ID is provided
-  let query = "SELECT * FROM shipments";
-  let params = [];
+  let query = "SELECT * FROM shipments WHERE owner_id = $1";
+  let params = [ownerIdFilter];
 
-  if (ownerIdFilter) {
+  /*if (ownerIdFilter) {
     query += " WHERE owner_id = $1";
     params.push(ownerIdFilter);
-  }
+  }*/
 
   const result = await pool.query(query, params);
   const shipments = result.rows;
@@ -71,19 +71,11 @@ const getShipments = async (ownerIdFilter = null) => {
   });
 };
 
-const updateShipmentStatus = async (id, nextStatus) => {
+const updateShipmentStatus = async (id, nextStatus, owner_id) => {
   // fetch current status
-  const currentResult = await pool.query(
-    "SELECT status FROM shipments WHERE id = $1",
-    [id],
-  );
+  const currentShipment = await getShipmentById(id, owner_id);
 
-  if (currentResult.rows.length === 0) {
-    const error = new Error("Shipment Not Found");
-    error.statusCode = 404;
-    throw error;
-  }
-  const currentStatus = currentResult.rows[0].status.trim().toUpperCase();
+  const currentStatus = currentShipment.status.trim().toUpperCase();
   const targetStatus = nextStatus.toUpperCase();
 
   //  detect no-op
@@ -107,15 +99,28 @@ const updateShipmentStatus = async (id, nextStatus) => {
 
   // Update the database
   const updateResult = await pool.query(
-    "UPDATE shipments SET status = $1, updated_at = NOW() WHERE id =$2 RETURNING *",
-    [targetStatus, id],
+    "UPDATE shipments SET status = $1, updated_at = NOW() WHERE id = $2 AND owner_id = $3 RETURNING *",
+    [targetStatus, id, owner_id],
   );
 
   return updateResult.rows[0];
+};
+
+const getShipmentById = async (id, owner_id) => {
+  const query = "SELECT * FROM shipments WHERE id =$1 AND owner_id = $2";
+  const result = await pool.query(query, [id, owner_id]);
+
+  if (result.rows.length === 0) {
+    const error = new Error("Shipment not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return result.rows[0];
 };
 
 module.exports = {
   createShipment,
   getShipments,
   updateShipmentStatus,
+  getShipmentById,
 };

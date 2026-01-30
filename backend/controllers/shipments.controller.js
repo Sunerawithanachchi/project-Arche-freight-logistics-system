@@ -42,7 +42,7 @@ const shipmentService = require("../services/shipment.service");
 //GET /shipments
 const getShipments = asyncHandler(async (req, res) => {
   // Extract filter from URL  (e.g./shipments?owner_id=...)
-  const { owner_id } = req.query;
+  const owner_id = req.user.id;
 
   const shipments = await shipmentService.getShipments(owner_id);
   res.status(200).json(shipments);
@@ -62,15 +62,15 @@ const getShipments = asyncHandler(async (req, res) => {
 });*/
 
 //POST /Shipments
+//
 const createShipment = asyncHandler(async (req, res) => {
-  const { origin, destination, status, owner_id } = req.body;
+  const { origin, destination, status } = req.body;
+  const owner_id = req.user.id;
 
-  if (!origin || !destination || !status || !owner_id) {
-    const error = new Error(
-      "All fields (origin , destination, status , owner_id) are required",
-    );
-    error.statusCode = 400;
-    throw error;
+  if (!origin || !destination || !status) {
+    return res
+      .status(400)
+      .json({ error: "Origin, destination and status are required" });
   }
   try {
     const newShipment = await shipmentService.createShipment({
@@ -89,6 +89,7 @@ const createShipment = asyncHandler(async (req, res) => {
 const updateStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+  const ownerId = req.user.id;
 
   if (!status) {
     const error = new Error("Status is Required");
@@ -98,8 +99,17 @@ const updateStatus = asyncHandler(async (req, res) => {
   const updatedShipment = await shipmentService.updateShipmentStatus(
     id,
     status,
+    ownerId,
   );
   res.status(200).json(updatedShipment);
+});
+
+const getShipmentById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const ownerId = req.user.id;
+
+  const shipment = await shipmentService.getShipmentById(id, ownerId);
+  res.json(shipment);
 });
 
 // Exports always at the bottom
@@ -107,4 +117,5 @@ module.exports = {
   getShipments,
   createShipment,
   updateStatus,
+  getShipmentById,
 };
