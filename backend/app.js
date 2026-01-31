@@ -10,8 +10,6 @@ const shipmentRoutes = require("./routes/shipments.routes");
 //this allows the app to "read" json data sent in a request body
 app.use(express.json());
 
-app.use(mockUser);
-
 //2.Custom logging middleware
 //This runs for every request and logs the method (GET,POST,etc)and the path
 app.use((req, res, next) => {
@@ -21,6 +19,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/health", healthRoutes);
+
+app.use(mockUser);
 
 //Mount the domain route
 app.use("/shipments", shipmentRoutes);
