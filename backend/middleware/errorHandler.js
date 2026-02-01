@@ -17,6 +17,13 @@ const errorHandler = (err, req, res, next) => {
   if (isDatabaseDown) {
     statusCode = 503; // service unavailable
     message = "Service temporarily degraded. Database unreachable.";
+  }
+  // NEW: Catch Postgres UUID syntax errors (Error code '22P02')
+  else if (err.code === "22P02") {
+    return res.status(401).json({
+      error: "Unauthorized",
+      message: "Invalid identity format",
+    });
   } else if (statusCode >= 500) {
     message = "Internal Server Error";
   }

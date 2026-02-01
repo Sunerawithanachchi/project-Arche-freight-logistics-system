@@ -1,7 +1,8 @@
 require("dotenv").config(); // THIS MUST BE LINE 1
 const express = require("express");
 const app = express();
-const mockUser = require("./middleware/mockUser");
+//const mockUser = require("./middleware/mockUser");
+const auth = require("./middleware/auth");
 const healthRoutes = require("./routes/health.routes.js");
 const shipmentRoutes = require("./routes/shipments.routes");
 // Initialize express app
@@ -20,7 +21,9 @@ app.use((req, res, next) => {
 
 app.use("/health", healthRoutes);
 
-app.use(mockUser);
+app.use(auth);
+
+//app.use(mockUser);
 
 //Mount the domain route
 app.use("/shipments", shipmentRoutes);
