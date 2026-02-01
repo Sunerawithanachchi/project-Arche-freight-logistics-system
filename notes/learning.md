@@ -20,3 +20,7 @@ Commands for Reference
 • `taskkill /F /IM node.exe` (Kill locking processes)
 
 • `git merge --abort` (Recovery from failed merge)
+
+## 2026-01-31 Failure Containment : Implemented lazy DB connection and global error mapping. The system now returns 503 Service Unavailable for infra failures instead of 500s, preventing process crashes and data leaks. Health checks report "degraded" status but remain online.
+
+## 2026-02-01 Identity vs. Ownership : Decoupled the trust boundary. Middleware now handles cryptographic identity verification (Who are you?), while Service layers handle ownership enforcement (Can you touch this shipment?). This prevents business logic from leaking into the authentication layer.
