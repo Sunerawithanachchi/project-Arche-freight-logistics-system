@@ -2,6 +2,7 @@ require("dotenv").config(); // THIS MUST BE LINE 1
 const express = require("express");
 const app = express();
 //const mockUser = require("./middleware/mockUser");
+const userController = require("./controllers/userController");
 const auth = require("./middleware/auth");
 const healthRoutes = require("./routes/health.routes.js");
 const shipmentRoutes = require("./routes/shipments.routes");
@@ -20,6 +21,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/health", healthRoutes);
+
+app.post("/users", userController.register);
 
 app.use(auth);
 

@@ -17,6 +17,11 @@ const errorHandler = (err, req, res, next) => {
   if (isDatabaseDown) {
     statusCode = 503; // service unavailable
     message = "Service temporarily degraded. Database unreachable.";
+  } else if (err.code === "23505") {
+    return res.status(409).json({
+      error: "Conflict",
+      message: "A user with this email already exists.",
+    });
   }
   // NEW: Catch Postgres UUID syntax errors (Error code '22P02')
   else if (err.code === "22P02") {
