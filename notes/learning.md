@@ -24,3 +24,22 @@ Commands for Reference
 ## 2026-01-31 Failure Containment : Implemented lazy DB connection and global error mapping. The system now returns 503 Service Unavailable for infra failures instead of 500s, preventing process crashes and data leaks. Health checks report "degraded" status but remain online.
 
 ## 2026-02-01 Identity vs. Ownership : Decoupled the trust boundary. Middleware now handles cryptographic identity verification (Who are you?), while Service layers handle ownership enforcement (Can you touch this shipment?). This prevents business logic from leaking into the authentication layer.
+
+## 2026-02-03 Core Implementation Logic
+
+Integrated Identity Provisioning: Transitioned from static/mock authentication to a dynamic Register-and-Issue flow. The POST /users endpoint now serves as the primary gateway for both data persistence and cryptographic credential delivery.
+
+Cryptographic "Token Factory": Established a dedicated issuance utility (utils/token.js). This centralizes JWT signing logic, ensuring consistent enforcement of the sub (Subject) and exp (Expiration) claims across the entire system.
+
+Decoupled Auth Architecture: Maintained a strict "Separation of Concerns" by isolating the Token Printer (Utility) from the Auth Guard (Middleware). This ensures the authentication logic doesn't care how a token is made, only that it is valid.
+
+Data Integrity & Resilience
+Relational Constraints as Guardrails: Implemented a UNIQUE constraint on the email column at the database level. This acts as the final "source of truth" to prevent data corruption or duplicate identities.
+
+Semantic Error Mapping: Moved beyond generic 500 Internal Server Errors by mapping specific Postgres states to REST-compliant HTTP codes:
+
+## Postgres 23505 → 409 Conflict: Provides clear feedback to the client regarding duplicate resources.
+
+## Postgres 22P02 → 400 Bad Request: Correctly identifies malformed input before it compromises system logic.
+
+Credential Hygiene: Enforced a mandatory 1-hour expiration window on all issued tokens. This limits the "blast radius" in the event of a token compromise, fulfilling basic security compliance standards.
