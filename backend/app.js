@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 //const mockUser = require("./middleware/mockUser");
 const userController = require("./controllers/userController");
+const authController = require("./controllers/authController");
 const auth = require("./middleware/auth");
 const healthRoutes = require("./routes/health.routes.js");
 const shipmentRoutes = require("./routes/shipments.routes");
@@ -23,6 +24,8 @@ app.use((req, res, next) => {
 app.use("/health", healthRoutes);
 
 app.post("/users", userController.register);
+
+app.post("/auth/login", authController.login);
 
 app.use(auth);
 
