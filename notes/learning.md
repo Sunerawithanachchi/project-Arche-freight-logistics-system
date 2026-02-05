@@ -43,3 +43,14 @@ Semantic Error Mapping: Moved beyond generic 500 Internal Server Errors by mappi
 ## Postgres 22P02 → 400 Bad Request: Correctly identifies malformed input before it compromises system logic.
 
 Credential Hygiene: Enforced a mandatory 1-hour expiration window on all issued tokens. This limits the "blast radius" in the event of a token compromise, fulfilling basic security compliance standards.
+
+## 2026-02-05 The Hashing Process
+
+When a user signs up, you don't store their password. Instead:
+
+Salt Generation: A random string (the salt) is created.
+
+Hashing: The password and salt are combined and run through the bcrypt algorithm.
+
+Storage: You store the resulting hash (which includes the salt) in your database.
+12 rounds is currently the industry "sweet spot"—it takes about 250–350ms to hash
