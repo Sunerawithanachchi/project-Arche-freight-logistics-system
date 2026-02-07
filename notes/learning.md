@@ -54,3 +54,7 @@ Hashing: The password and salt are combined and run through the bcrypt algorithm
 
 Storage: You store the resulting hash (which includes the salt) in your database.
 12 rounds is currently the industry "sweet spot"—it takes about 250–350ms to hash
+
+## 2026-02-06 RBAC architecture
+
+Successfully migrated the API from a flat authentication model to a tiered Role-Based Access Control (RBAC) architecture. This ensures that while all registered users can access the system, high-risk operations (Create/Update Shipments) are strictly reserved for administrative identities.
