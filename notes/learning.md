@@ -58,3 +58,9 @@ Storage: You store the resulting hash (which includes the salt) in your database
 ## 2026-02-06 RBAC architecture
 
 Successfully migrated the API from a flat authentication model to a tiered Role-Based Access Control (RBAC) architecture. This ensures that while all registered users can access the system, high-risk operations (Create/Update Shipments) are strictly reserved for administrative identities.
+
+## Current state of shipment API
+
+view Shipments -> All Authenticated -> Operators & Admins can track logistics.
+Create Shipment-> Admin Only -> Prevents unauthorized freight entries.
+Update Status -> Admin Only
