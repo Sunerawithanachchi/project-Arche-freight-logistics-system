@@ -17,3 +17,7 @@ This project is a full-stack showcase of modern web architecture, utilizing a hi
 ## Current Status
 
 **Day 1 – Setup:** Repository initialized with professional baseline, license, and initial project structure. Local development environment verified.
+
+## Engineering Approach
+
+The backend is designed with explicit separation of concerns, treating authentication, authorization, business logic, and infrastructure as independent system boundaries. Data integrity and security are enforced at multiple layers (database constraints, service validation, and middleware guards), with deliberate failure semantics and resilience under infrastructure outages. The system is built incrementally using production-oriented patterns rather than tutorial abstractions.
