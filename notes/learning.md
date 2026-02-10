@@ -64,3 +64,6 @@ Successfully migrated the API from a flat authentication model to a tiered Role-
 view Shipments -> All Authenticated -> Operators & Admins can track logistics.
 Create Shipment-> Admin Only -> Prevents unauthorized freight entries.
 Update Status -> Admin Only
+
+##express.json() explain
+express.json is a built-in middleware that acts as a basic syntax checker. It reads the raw text stream coming from a request and uses JSON.parse to turn it into a JavaScript object stored in req.body. However, it only cares if the JSON is formatted correctly with proper commas and brackets. It does not care about the actual content, meaning it will allow a user to send an age as a string, an email without an @ symbol, or even extra malicious fields like isAdmin set to true. This leaves your req.body populated but dirty and unverified.
