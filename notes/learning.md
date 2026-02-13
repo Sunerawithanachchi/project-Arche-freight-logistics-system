@@ -71,3 +71,7 @@ express.json is a built-in middleware that acts as a basic syntax checker. It re
 ##Zod is a runtime schema validation library used to validate and parse external data (such as HTTP request bodies) before it reaches business logic. It ensures incoming data matches expected shapes and types, providing clear, structured validation errors. Zod complements TypeScript by enforcing data correctness at runtime, helping prevent invalid or unsafe data from propagating through the system.
 
 ##JSON response headers define how clients interpret API responses and help prevent unsafe content handling. Explicitly setting Content-Type: application/json ensures responses are treated strictly as data rather than executable content, reducing the risk of content-type confusion and unintended client-side behavior.
+
+## Helmet
+
+Helmet helps secure Express applications by setting a collection of HTTP response headers that enforce safer browser behavior. These headers reduce common attack vectors such as clickjacking, MIME-type sniffing, and cross-site scripting by instructing clients on how content may be framed, interpreted, and executed.
