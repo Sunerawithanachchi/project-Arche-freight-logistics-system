@@ -28,6 +28,11 @@ Commands for Reference
 error handler centralizes all backend error handling to ensure consistent, secure, and predictable API responses. It logs internal error details for debugging while preventing sensitive implementation details (such as SQL errors or stack traces) from leaking to the client. The handler prioritizes known error cases, assigns appropriate HTTP status codes, and falls back to a safe 500 Internal Server Error for unexpected failures.
 By separating internal logging from client-facing responses, this approach improves observability for developers while maintaining security and API stability in production environments.
 
+## Database Failure Detection & Graceful Degradation
+
+The middleware includes targeted detection for database-related failures, such as connection issues and Postgres-specific error codes. When a database outage is detected, the API responds with a 503 Service Unavailable status and a degraded service message, clearly signaling temporary backend instability without exposing internal error details.
+This design limits the blast radius of infrastructure failures, provides meaningful status context for health checks, and ensures clients receive actionable, standardized responses instead of raw runtime errors
+
 ## 2026-02-01 Identity vs. Ownership : Decoupled the trust boundary. Middleware now handles cryptographic identity verification (Who are you?), while Service layers handle ownership enforcement (Can you touch this shipment?). This prevents business logic from leaking into the authentication layer.
 
 ## 2026-02-03 Core Implementation Logic
