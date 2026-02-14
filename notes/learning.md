@@ -23,6 +23,11 @@ Commands for Reference
 
 ## 2026-01-31 Failure Containment : Implemented lazy DB connection and global error mapping. The system now returns 503 Service Unavailable for infra failures instead of 500s, preventing process crashes and data leaks. Health checks report "degraded" status but remain online.
 
+## Centralized Error Handling & Safety
+
+error handler centralizes all backend error handling to ensure consistent, secure, and predictable API responses. It logs internal error details for debugging while preventing sensitive implementation details (such as SQL errors or stack traces) from leaking to the client. The handler prioritizes known error cases, assigns appropriate HTTP status codes, and falls back to a safe 500 Internal Server Error for unexpected failures.
+By separating internal logging from client-facing responses, this approach improves observability for developers while maintaining security and API stability in production environments.
+
 ## 2026-02-01 Identity vs. Ownership : Decoupled the trust boundary. Middleware now handles cryptographic identity verification (Who are you?), while Service layers handle ownership enforcement (Can you touch this shipment?). This prevents business logic from leaking into the authentication layer.
 
 ## 2026-02-03 Core Implementation Logic
