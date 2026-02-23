@@ -85,3 +85,6 @@ express.json is a built-in middleware that acts as a basic syntax checker. It re
 ## Helmet
 
 Helmet helps secure Express applications by setting a collection of HTTP response headers that enforce safer browser behavior. These headers reduce common attack vectors such as clickjacking, MIME-type sniffing, and cross-site scripting by instructing clients on how content may be framed, interpreted, and executed.
+
+## Manual tests vs Jest
+While manual testing helps with understanding the system and catching obvious issues early, it is time-consuming, not repeatable at scale, and depends heavily on the developer remembering what to test. Over time, manual testing becomes inconsistent and fragile, especially as the codebase grows.
