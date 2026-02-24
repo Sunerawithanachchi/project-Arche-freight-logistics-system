@@ -87,4 +87,6 @@ express.json is a built-in middleware that acts as a basic syntax checker. It re
 Helmet helps secure Express applications by setting a collection of HTTP response headers that enforce safer browser behavior. These headers reduce common attack vectors such as clickjacking, MIME-type sniffing, and cross-site scripting by instructing clients on how content may be framed, interpreted, and executed.
 
 ## Manual tests vs Jest
+
 While manual testing helps with understanding the system and catching obvious issues early, it is time-consuming, not repeatable at scale, and depends heavily on the developer remembering what to test. Over time, manual testing becomes inconsistent and fragile, especially as the codebase grows.
+Jest automates this process by allowing you to write repeatable, executable test cases that verify your code’s behavior automatically. Because Jest tests can run from the command line, they integrate easily into CI/CD pipelines. Every time code is pushed to a repository, the CI system can run the full test suite and immediately detect regressions before deployment. This reduces human error, increases confidence in releases, and enables safer, faster continuous delivery.
